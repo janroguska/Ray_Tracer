@@ -12,7 +12,7 @@
 
 NAME = RTv1
 
-SRC = main.c get_input.c
+SRC = main.c get_input.c shapes.c
 
 OBJ = $(SRC:.c=.o)
 

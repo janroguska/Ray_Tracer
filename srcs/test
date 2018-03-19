@@ -1,12 +1,20 @@
 camera:
 		x: 0.0
 		y: 0.0
-		z: 2000.0
+		z: 5000.0
 object:
-		number: 1.0
+		shape: 1.0
+		x: 700.0
+		y: 700.0
+		z: 0.0
+		r: 100.0
+		rotationx: 0.0
+		rotationy: 0.0
+		rotationz: 0.0
+object:
 		shape: 0.0
-		x: 100.0
-		y: 100.0
+		x: 500.0
+		y: 500.0
 		z: 0.0
 		r: 10.0
 		rotationx: 0.0

@@ -16,6 +16,8 @@ int		main(int argc, char **argv)
 {
 	t_master	m;
 
+	m.i = 0;
+	m.list = ft_lstnew(NULL, 0);
 	if (argc != 2)
 		return (0);
 	m.e.mlx = mlx_init();
@@ -36,46 +38,34 @@ int		ft_round(double i)
 	return (i < 0 ? i - 0.5 : i + 0.5);
 }
 
-int		check_for_sphere(t_master *m)
-{
-	double	a;
-	double	b;
-	double	c;
-
-	m->s.distx = m->c.x - m->s.x;
-	m->s.disty = m->c.y - m->s.y;
-	m->s.distz = m->c.z - m->s.z;
-	a = (m->d.x * m->d.x) + (m->d.y * m->d.y) + (m->d.z * m->d.z);
-	b = 2 * ((m->d.x * m->s.distx) + (m->d.y * m->s.disty)
-	+ (m->d.z * m->s.distz));
-	c = ((m->s.distx * m->s.distx) + (m->s.disty * m->s.disty)
-	+ (m->s.distz * m->s.distz))
-	- (m->s.r * m->s.r);
-	m->s.discr = b * b - 4 * a * c;
-	if (m->s.discr < 0)
-		return (0);
-	else
-		return (1);
-}
-
 int		draw(t_master *m)
 {
 	double	i;
+	t_shape *s;
+	t_list	*tmp;
 
-	m->d.y = -1;
+	tmp = m->list;
 	m->d.z = WIDTH - m->c.z;
-	while (++m->d.y < HEIGHT)
+	while (tmp != NULL && tmp->content != NULL)
 	{
-		m->d.x = -1;
-		while (++m->d.x < WIDTH)
+		s = (t_shape*)tmp->content;
+		m->d.y = -1;
+		while (++m->d.y < HEIGHT)
 		{
-			i = check_for_sphere(m);
-			if (i == 1)
-				m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0xff0000;
-			else
-				m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x000000;
+			m->d.x = -1;
+			while (++m->d.x < WIDTH)
+			{
+				if (s->s == 0)
+					i = check_for_sphere(m, s);
+				else if (s->s == 1)
+					i = check_for_cylinder(m, s);
+				colour(m, s, i);
+			}
 		}
+		free(s);
+		tmp = tmp->next;
 	}
+	tmp = m->list;
 	mlx_put_image_to_window(m->e.mlx, m->e.win, m->e.img, 0, 0);
 	return (0);
 }
@@ -85,4 +75,12 @@ int		key_hook(int keycode)
 	if (keycode == ESC)
 		exit(0);
 	return (0);
+}
+
+void	colour(t_master *m, t_shape *s, int i)
+{
+	if (s->s == 0 && i == 1)
+		m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0xff0000;
+	else if (s->s == 1 && i == 1)
+		m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x00ff00;
 }

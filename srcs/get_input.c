@@ -18,6 +18,7 @@ int		read_file(t_master *m, char *argv)
 	int		j;
 
 	m->r.fd = open(argv, O_RDONLY);
+	i = 0;
 	if (m->r.fd == -1)
 		exit(0);
 	while ((m->r.ret = get_next_line(m->r.fd, &m->r.line)) > 0)
@@ -79,42 +80,60 @@ int		get_object_coordinates(t_master *m)
 {
 	int		i;
 	int		j;
+	t_list	*tmp;
+	t_shape	*s;
 
 	i = 0;
 	j = -1;
-	while (++j <= 8)
+	s = malloc(sizeof(t_shape));
+	initialize_coordinates(s);
+	m->i++;
+	while (++j <= 7)
 	{
 		i = 0;
 		if ((m->r.ret = get_next_line(m->r.fd, &m->r.line)) < 1)
 			return (0);
 		while (m->r.line[i] != '\0' && (m->r.line[i] < 48 || m->r.line[i] > 57))
 			i++;
-		allocate_coordinates(m, j, i);
+		allocate_coordinates(m, s, j, i);
 		free(m->r.line);
 	}
+	tmp = ft_lstnew(s, sizeof(t_shape));
+	ft_lstadd(&m->list, tmp);
+	free(s);
 	return (0);
 }
 
-void	allocate_coordinates(t_master *m, int j, int i)
+void	initialize_coordinates(t_shape *s)
+{
+	s->s = 0.0;
+	s->x = 0.0;
+	s->y = 0.0;
+	s->z = 0.0;
+	s->r = 0.0;
+	s->rx = 0.0;
+	s->ry = 0.0;
+	s->rz = 0.0;
+}
+
+void	allocate_coordinates(t_master *m, t_shape *s, int j, int i)
 {
 	if (j == 0)
-		m->s.n = ft_atof(m->r.line + i);
+		s->s = ft_atof(m->r.line + i);
 	else if (j == 1)
-		m->s.s = ft_atof(m->r.line + i);
+		s->x = ft_atof(m->r.line + i);
 	else if (j == 2)
-		m->s.x = ft_atof(m->r.line + i);
+		s->y = ft_atof(m->r.line + i);
 	else if (j == 3)
-		m->s.y = ft_atof(m->r.line + i);
+		s->z = ft_atof(m->r.line + i);
 	else if (j == 4)
-		m->s.z = ft_atof(m->r.line + i);
+		s->r = ft_atof(m->r.line + i);
 	else if (j == 5)
-		m->s.r = ft_atof(m->r.line + i);
+		s->rx = ft_atof(m->r.line + i);
 	else if (j == 6)
-		m->s.rx = ft_atof(m->r.line + i);
+		s->ry = ft_atof(m->r.line + i);
 	else if (j == 7)
-		m->s.ry = ft_atof(m->r.line + i);
-	else if (j == 8)
-		m->s.rz = ft_atof(m->r.line + i);
+		s->rz = ft_atof(m->r.line + i);
 	else
 		return ;
 }

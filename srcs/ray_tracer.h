@@ -60,7 +60,7 @@ typedef	struct	s_camera
 	double	z;
 }				t_camera;
 
-typedef	struct	s_sphere
+typedef	struct	s_shape
 {
 	double	x;
 	double	y;
@@ -70,12 +70,7 @@ typedef	struct	s_sphere
 	double	ry;
 	double	rz;
 	double	s;
-	double	n;
-	double	distx;
-	double	disty;
-	double	distz;
-	double	discr;
-}				t_sphere;
+}				t_shape;
 
 typedef	struct	s_direction
 {
@@ -92,24 +87,61 @@ typedef	struct	s_read
 	char	*tmp;
 }				t_read;
 
+typedef	struct s_compute
+{
+	double	distx;
+	double	disty;
+	double	distz;
+	double	discr;
+	double	discrsq;
+	double	t0;
+	double	t1;
+	double	a;
+	double	b;
+	double	c;
+	double	y0;
+	double	y1;
+	double	th;
+	double	v;
+	double	vx;
+	double	vy;
+	double	vz;
+	double	p;
+	double	px;
+	double	py;
+	double	pz;
+	double	vax;
+	double	vay;
+	double	vaz;
+}				t_compute;
+
 typedef	struct	s_master
 {
 	t_env		e;
 	t_camera	c;
-	t_sphere	s;
 	t_direction	d;
 	t_read		r;
+	t_shape		s;
+	t_list		*list;
+	t_compute	t;
+	int			i;
 }				t_master;
 
 int				main(int argc, char **argv);
 int				draw(t_master *m);
 int				key_hook(int keycode);
-int				check_for_shape(t_master *m);
+int				check_for_sphere(t_master *m, t_shape *s);
 int				ft_round(double i);
 int				read_file(t_master *m, char *argv);
 int				check_input(t_master *m);
 int				get_camera_coordinates(t_master *m);
 int				get_object_coordinates(t_master *m);
-void			allocate_coordinates(t_master *m, int j, int i);
+void			allocate_coordinates(t_master *m, t_shape *s, int j, int i);
+int				check_for_cylinder(t_master *m, t_shape *s);
+int				cylinder_intersection(t_master *m);
+void			initialize_coordinates(t_shape *s);
+void			colour(t_master *m, t_shape *s, int i);
+int				check_for_cone(t_master *m, t_shape *s);
+void			rotate(t_master *m, t_shape *s);
 
 #endif

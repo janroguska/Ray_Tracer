@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "includes/libft.h"
-#include <stdio.h>
 
 static	int		check_num(char str)
 {
