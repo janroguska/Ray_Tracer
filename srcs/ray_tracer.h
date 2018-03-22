@@ -26,7 +26,7 @@
 # include <stdio.h>
 
 # define WIDTH 800
-# define HEIGHT 800
+# define HEIGHT 600
 # define POS(i) (i < 0 ? -i : i)
 # define ESC 53
 # define MOTION_NOTIFY 6
@@ -113,6 +113,10 @@ typedef	struct s_compute
 	double	vax;
 	double	vay;
 	double	vaz;
+	double	nx;
+	double	ny;
+	double	nz;
+	double	len;
 }				t_compute;
 
 typedef	struct	s_master
@@ -130,18 +134,20 @@ typedef	struct	s_master
 int				main(int argc, char **argv);
 int				draw(t_master *m);
 int				key_hook(int keycode);
-int				check_for_sphere(t_master *m, t_shape *s);
+double			check_for_sphere(t_master *m, t_shape *s);
 int				ft_round(double i);
 int				read_file(t_master *m, char *argv);
 int				check_input(t_master *m);
 int				get_camera_coordinates(t_master *m);
 int				get_object_coordinates(t_master *m);
 void			allocate_coordinates(t_master *m, t_shape *s, int j, int i);
-int				check_for_cylinder(t_master *m, t_shape *s);
-int				cylinder_intersection(t_master *m);
+double			check_for_cylinder(t_master *m, t_shape *s);
 void			initialize_coordinates(t_shape *s);
-void			colour(t_master *m, t_shape *s, int i);
-int				check_for_cone(t_master *m, t_shape *s);
+void			colour(t_master *m, t_shape *s);
+double			check_for_cone(t_master *m, t_shape *s);
 void			rotate(t_master *m, t_shape *s);
+void			inner_product(t_master *m);
+double			check_for_plane(t_master *m, t_shape *s);
+void			check_shape(t_master *m, t_list *list);
 
 #endif

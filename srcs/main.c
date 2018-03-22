@@ -40,34 +40,44 @@ int		ft_round(double i)
 
 int		draw(t_master *m)
 {
+	t_list	*tmp;
+
+	m->d.z = m->c.z * -1;
+	m->d.y = -1;
+	tmp = m->list;
+	while (++m->d.y < HEIGHT)
+	{
+		m->d.x = -1;
+		while (++m->d.x < WIDTH)
+			check_shape(m, tmp);
+	}
+	mlx_put_image_to_window(m->e.mlx, m->e.win, m->e.img, 0, 0);
+	return (0);
+}
+
+void	check_shape(t_master *m, t_list *list)
+{
 	double	i;
 	t_shape *s;
 	t_list	*tmp;
 
-	tmp = m->list;
-	m->d.z = WIDTH - m->c.z;
+	i = 0.0;
+	tmp = list;
 	while (tmp != NULL && tmp->content != NULL)
 	{
 		s = (t_shape*)tmp->content;
-		m->d.y = -1;
-		while (++m->d.y < HEIGHT)
-		{
-			m->d.x = -1;
-			while (++m->d.x < WIDTH)
-			{
-				if (s->s == 0)
-					i = check_for_sphere(m, s);
-				else if (s->s == 1)
-					i = check_for_cylinder(m, s);
-				colour(m, s, i);
-			}
-		}
-		free(s);
-		tmp = tmp->next;
+		if (s->s == 0)
+			i = check_for_sphere(m, s);
+		else if (s->s == 1)
+			i = check_for_cylinder(m, s);
+		else if (s->s == 2)
+			i = check_for_cone(m, s);
+		else if (s->s == 3)
+			i = check_for_plane(m, s);
+		if (i >= 0)
+			colour(m, s);
+		tmp = tmp->next;                                                                                                                     
 	}
-	tmp = m->list;
-	mlx_put_image_to_window(m->e.mlx, m->e.win, m->e.img, 0, 0);
-	return (0);
 }
 
 int		key_hook(int keycode)
@@ -77,10 +87,14 @@ int		key_hook(int keycode)
 	return (0);
 }
 
-void	colour(t_master *m, t_shape *s, int i)
+void	colour(t_master *m, t_shape *s)
 {
-	if (s->s == 0 && i == 1)
+	if (s->s == 0.0)
 		m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0xff0000;
-	else if (s->s == 1 && i == 1)
+	else if (s->s == 1.0)
 		m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x00ff00;
+	else if (s->s == 2.0)
+		m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x0000ff;
+	else if (s->s == 3.0)
+		m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0xffffff;
 }
