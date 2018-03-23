@@ -41,6 +41,7 @@
 # define DOWN 125
 # define LEFT 124
 # define RIGHT 123
+# define To_Radians(Deg) ((Deg) * M_PI / 180.0)
 
 typedef	struct	s_env
 {
@@ -93,15 +94,9 @@ typedef	struct s_compute
 	double	disty;
 	double	distz;
 	double	discr;
-	double	discrsq;
-	double	t0;
-	double	t1;
 	double	a;
 	double	b;
 	double	c;
-	double	y0;
-	double	y1;
-	double	th;
 	double	v;
 	double	vx;
 	double	vy;
@@ -149,5 +144,7 @@ void			rotate(t_master *m, t_shape *s);
 void			inner_product(t_master *m);
 double			check_for_plane(t_master *m, t_shape *s);
 void			check_shape(t_master *m, t_list *list);
+void			normalize_vectors(t_master *m, t_shape *s);
+double			get_t_value(t_master *m);
 
 #endif

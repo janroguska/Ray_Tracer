@@ -58,10 +58,14 @@ int		draw(t_master *m)
 void	check_shape(t_master *m, t_list *list)
 {
 	double	i;
+	double	j;
+	int		k;
 	t_shape *s;
 	t_list	*tmp;
 
 	i = 0.0;
+	j = 0.0;
+	k = 0;
 	tmp = list;
 	while (tmp != NULL && tmp->content != NULL)
 	{
@@ -74,9 +78,15 @@ void	check_shape(t_master *m, t_list *list)
 			i = check_for_cone(m, s);
 		else if (s->s == 3)
 			i = check_for_plane(m, s);
-		if (i >= 0)
+		if (k == 0)
+			j = i;
+		if (i >= 0 && (i <= j || j < 0))
+		{
+			j = i;
 			colour(m, s);
-		tmp = tmp->next;                                                                                                                     
+		}
+		tmp = tmp->next;
+		k++;                                                                                                                  
 	}
 }
 
