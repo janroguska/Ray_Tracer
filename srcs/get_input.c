@@ -58,7 +58,7 @@ int		get_camera_coordinates(t_master *m)
 	int		j;
 
 	j = -1;
-	while (++j <= 2)
+	while (++j <= 5)
 	{
 		i = 0;
 		if ((m->r.ret = get_next_line(m->r.fd, &m->r.line)) < 1)
@@ -71,6 +71,12 @@ int		get_camera_coordinates(t_master *m)
 			m->c.y = ft_atof(m->r.line + i);
 		else if (j == 2)
 			m->c.z = ft_atof(m->r.line + i);
+		else if (j == 3)
+			m->c.rx = ft_atof(m->r.line + i);
+		else if (j == 4)
+			m->c.ry = ft_atof(m->r.line + i);
+		else if (j == 5)
+			m->c.rz = ft_atof(m->r.line + i);
 		free(m->r.line);
 	}
 	return (0);
@@ -87,7 +93,6 @@ int		get_object_coordinates(t_master *m)
 	j = -1;
 	s = malloc(sizeof(t_shape));
 	initialize_coordinates(s);
-	m->i++;
 	while (++j <= 7)
 	{
 		i = 0;

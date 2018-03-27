@@ -16,7 +16,6 @@ int		main(int argc, char **argv)
 {
 	t_master	m;
 
-	m.i = 0;
 	m.list = ft_lstnew(NULL, 0);
 	if (argc != 2)
 		return (0);
@@ -58,10 +57,14 @@ int		draw(t_master *m)
 void	check_shape(t_master *m, t_list *list)
 {
 	double	i;
+	double	j;
+	int		k;
 	t_shape *s;
 	t_list	*tmp;
 
 	i = 0.0;
+	j = 0.0;
+	k = 0;
 	tmp = list;
 	while (tmp != NULL && tmp->content != NULL)
 	{
@@ -74,9 +77,15 @@ void	check_shape(t_master *m, t_list *list)
 			i = check_for_cone(m, s);
 		else if (s->s == 3)
 			i = check_for_plane(m, s);
-		if (i >= 0)
+		if (k == 0)
+			j = i;
+		if (i >= 0 && (i <= j || j < 0))
+		{
+			j = i;
 			colour(m, s);
-		tmp = tmp->next;                                                                                                                     
+		}
+		tmp = tmp->next;
+		k++;                                                                                                                  
 	}
 }
 
@@ -96,5 +105,5 @@ void	colour(t_master *m, t_shape *s)
 	else if (s->s == 2.0)
 		m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x0000ff;
 	else if (s->s == 3.0)
-		m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0xffffff;
+		m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x778899;
 }
