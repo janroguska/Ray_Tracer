@@ -18,6 +18,8 @@ OBJ = $(SRC:.c=.o)
 
 LIBFT = includes/libft/libft.a
 
+MINILIBX = minilibx/libmlx.a
+
 HEADER = -c -I ray_tracer.h
 
 all: $(NAME)
@@ -28,15 +30,20 @@ $(OBJ): %.o: %.c
 $(LIBFT):
 	@make -C includes/libft
 
-$(NAME): $(LIBFT) $(OBJ)
-	@gcc $(OBJ) $(LIBFT) -o $(NAME) -lmlx -framework OpenGL -framework AppKit
+$(MINILIBX):
+	@make -C minilibx
+
+$(NAME): $(LIBFT) $(OBJ) $(MINILIBX)
+	@gcc $(OBJ) $(LIBFT) $(MINILIBX) -o $(NAME) -framework OpenGL -framework AppKit
 
 clean:
 	/bin/rm -f $(OBJ)
 	@make -C includes/libft clean
+	@make -C minilibx clean
 
 fclean: clean
 	/bin/rm -f $(NAME)
 	@make -C includes/libft fclean
+	@make -C minilibx clean
 
 re: fclean all
