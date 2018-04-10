@@ -41,7 +41,15 @@
 # define DOWN 125
 # define LEFT 124
 # define RIGHT 123
-# define To_Radians(Deg) ((Deg) * M_PI / 180.0)
+# define MOVE_UP 91
+# define MOVE_DOWN 84
+# define MOVE_RIGHT 88
+# define MOVE_LEFT 86
+# define ZDOWN 13
+# define ZUP 1
+# define ZOOMA 6
+# define ZOOMB 7
+# define RAD(Deg) ((Deg) * M_PI / 180.0)
 
 typedef	struct	s_env
 {
@@ -52,86 +60,88 @@ typedef	struct	s_env
 	void		*mlx;
 	void		*win;
 	void		*img;
+	double		resolution;
 }				t_env;
 
 typedef	struct	s_camera
 {
-	double	x;
-	double	y;
-	double	z;
-	double	rx;
-	double	ry;
-	double	rz;
-	double	dx;
-	double	dy;
-	double	dz;
+	double		camera_origin_x;
+	double		camera_origin_y;
+	double		camera_origin_z;
+	double		rotate_camera_x;
+	double		rotate_camera_y;
+	double		rotate_camera_z;
+	double		direction_x;
+	double		direction_y;
+	double		direction_z;
 }				t_camera;
 
 typedef	struct	s_shape
 {
-	double	x;
-	double	y;
-	double	z;
-	double	r;
-	double	rx;
-	double	ry;
-	double	rz;
-	double	s;
+	double		shape_origin_x;
+	double		shape_origin_y;
+	double		shape_origin_z;
+	double		radius;
+	double		rotate_shape_x;
+	double		rotate_shape_y;
+	double		rotate_shape_z;
+	double		shape_id;
 }				t_shape;
 
 typedef	struct	s_direction
 {
-	double	x;
-	double	y;
-	double	z;
+	double		x;
+	double		y;
+	double		z;
 }				t_direction;
 
 typedef	struct	s_read
 {
-	int		ret;
-	int		fd;
-	char	*line;
-	char	*tmp;
+	int			ret;
+	int			fd;
+	char		*line;
+	char		*tmp;
 }				t_read;
 
 typedef	struct	s_light
 {
-	double	x;
-	double	y;
-	double	z;
-	double	px;
-	double	py;
-	double	pz;
-	double	nx;
-	double	ny;
-	double	nz;
-	double	angle;
+	double		light_origin_x;
+	double		light_origin_y;
+	double		light_origin_z;
+	double		surface_x;
+	double		surface_y;
+	double		surface_z;
+	double		light_normal_x;
+	double		light_normal_y;
+	double		light_normal_z;
+	double		angle;
+	double		intensity;
 }				t_light;
 
-typedef	struct s_compute
+typedef	struct	s_compute
 {
-	double	distx;
-	double	disty;
-	double	distz;
-	double	discr;
-	double	a;
-	double	b;
-	double	c;
-	double	v;
-	double	vx;
-	double	vy;
-	double	vz;
-	double	p;
-	double	px;
-	double	py;
-	double	pz;
-	double	vax;
-	double	vay;
-	double	vaz;
-	double	nx;
-	double	ny;
-	double	nz;
-	double	len;
+	double		distx;
+	double		disty;
+	double		distz;
+	double		t_value;
+	double		a;
+	double		b;
+	double		c;
+	double		dot_product;
+	double		vx;
+	double		vy;
+	double		vz;
+	double		p;
+	double		px;
+	double		py;
+	double		pz;
+	double		vax;
+	double		vay;
+	double		vaz;
+	double		normalized_direction_x;
+	double		normalized_direction_y;
+	double		normalized_direction_z;
+	double		ray_length;
 }				t_compute;
 
 typedef	struct	s_master
@@ -142,23 +152,27 @@ typedef	struct	s_master
 	t_read		r;
 	t_shape		s;
 	t_list		*list;
+	t_list		*light;
 	t_compute	t;
 	t_light		l;
 }				t_master;
 
 int				main(int argc, char **argv);
 int				draw(t_master *m);
-int				key_hook(int keycode);
+int				key_hook(int keycode, t_master *m);
 double			check_for_sphere(t_master *m, t_shape *s);
 int				ft_round(double i);
 int				read_file(t_master *m, char *argv);
 int				check_input(t_master *m);
-int				get_camera_coordinates(t_master *m);
-int				get_object_coordinates(t_master *m);
+void			get_camera_coordinates(t_master *m);
+void			get_object_coordinates(t_master *m);
+void			get_light_coordinates(t_master *m);
 void			allocate_coordinates(t_master *m, t_shape *s, int j, int i);
+void			allocate_light(t_master *m, t_light *l, int j, int i);
 double			check_for_cylinder(t_master *m, t_shape *s);
 void			initialize_coordinates(t_shape *s);
-void			colour(t_master *m, t_shape *s);
+void			initialize_light(t_light *l);
+void			colour(t_master *m, t_shape *s, t_list *list);
 double			check_for_cone(t_master *m, t_shape *s);
 void			rotate(t_master *m, t_shape *s);
 void			inner_product(t_master *m);
@@ -169,6 +183,10 @@ double			get_t_value(t_master *m);
 void			rotate_camera(t_master *m);
 void			compute_ray_normal(t_master *m, t_shape *s);
 void			get_angle(t_master *m, double len);
-int				light_check(t_master *m, t_shape *s);
+double			light_check(t_master *m, t_shape *s, t_list *list);
+double			shoot_ray(t_master *m, t_shape *s);
+double			check_obstacle(t_master *m, t_list *list);
+int				move(int keycode, t_master *m);
+void			ft_clear(t_master *m);
 
 #endif

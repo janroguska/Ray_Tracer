@@ -32,9 +32,7 @@ int		read_file(t_master *m, char *argv)
 			i++;
 		m->r.tmp = ft_strnew(i + 1);
 		while (++j < i)
-		{
 			m->r.tmp[j] = m->r.line[j];
-		}
 		m->r.tmp[j] = '\0';
 		free(m->r.line);
 		check_input(m);
@@ -44,6 +42,8 @@ int		read_file(t_master *m, char *argv)
 
 int		check_input(t_master *m)
 {
+	if (ft_strcmp("light", m->r.tmp) == 0)
+		get_light_coordinates(m);
 	if (ft_strcmp("camera", m->r.tmp) == 0)
 		get_camera_coordinates(m);
 	if (ft_strcmp("object", m->r.tmp) == 0)
@@ -52,7 +52,60 @@ int		check_input(t_master *m)
 	return (0);
 }
 
-int		get_camera_coordinates(t_master *m)
+void	get_light_coordinates(t_master *m)
+{
+	int		i;
+	int		j;
+	t_list	*tmp;
+	t_light	*l;
+
+	i = 0;
+	j = -1;
+	l = malloc(sizeof(t_light));
+	initialize_light(l);
+	while (++j <= 3)
+	{
+		i = 0;
+		if ((m->r.ret = get_next_line(m->r.fd, &m->r.line)) < 1)
+			return ;
+		while (m->r.line[i] != '\0' && (m->r.line[i] < 48 || m->r.line[i] > 57) && m->r.line[i] != '-')
+			i++;
+		allocate_light(m, l, j, i);
+		free(m->r.line);
+	}
+	tmp = ft_lstnew(l, sizeof(t_light));
+	ft_lstadd(&m->light, tmp);
+	free(l);
+}
+
+void	initialize_light(t_light *l)
+{
+	l->light_origin_x = 0.0;
+	l->light_origin_y = 0.0;
+	l->light_origin_z = 0.0;
+	l->surface_x = 0.0;
+	l->surface_y = 0.0;
+	l->surface_z = 0.0;
+	l->light_normal_x = 0.0;
+	l->light_normal_y = 0.0;
+	l->light_normal_z = 0.0;
+	l->angle = 0.0;
+	l->intensity = 0.0;
+}
+
+void	allocate_light(t_master *m, t_light *l, int j, int i)
+{
+	if (j == 0)
+		l->light_origin_x = ft_atof(m->r.line + i);
+	else if (j == 1)
+		l->light_origin_y = ft_atof(m->r.line + i);
+	else if (j == 2)
+		l->light_origin_z = ft_atof(m->r.line + i);
+	else if (j == 3)
+		l->intensity = ft_atof(m->r.line + i);
+}
+
+void	get_camera_coordinates(t_master *m)
 {
 	int		i;
 	int		j;
@@ -62,27 +115,26 @@ int		get_camera_coordinates(t_master *m)
 	{
 		i = 0;
 		if ((m->r.ret = get_next_line(m->r.fd, &m->r.line)) < 1)
-			return (0);
-		while (m->r.line[i] != '\0' && (m->r.line[i] < 48 || m->r.line[i] > 57))
+			return ;
+		while (m->r.line[i] != '\0' && (m->r.line[i] < 48 || m->r.line[i] > 57) && m->r.line[i] != '-')
 			i++;
 		if (j == 0)
-			m->c.x = ft_atof(m->r.line + i);
+			m->c.camera_origin_x = ft_atof(m->r.line + i);
 		else if (j == 1)
-			m->c.y = ft_atof(m->r.line + i);
+			m->c.camera_origin_y = ft_atof(m->r.line + i);
 		else if (j == 2)
-			m->c.z = ft_atof(m->r.line + i);
+			m->c.camera_origin_z = ft_atof(m->r.line + i);
 		else if (j == 3)
-			m->c.rx = ft_atof(m->r.line + i);
+			m->c.rotate_camera_x = ft_atof(m->r.line + i);
 		else if (j == 4)
-			m->c.ry = ft_atof(m->r.line + i);
+			m->c.rotate_camera_y = ft_atof(m->r.line + i);
 		else if (j == 5)
-			m->c.rz = ft_atof(m->r.line + i);
+			m->c.rotate_camera_z = ft_atof(m->r.line + i);
 		free(m->r.line);
 	}
-	return (0);
 }
 
-int		get_object_coordinates(t_master *m)
+void	get_object_coordinates(t_master *m)
 {
 	int		i;
 	int		j;
@@ -97,8 +149,8 @@ int		get_object_coordinates(t_master *m)
 	{
 		i = 0;
 		if ((m->r.ret = get_next_line(m->r.fd, &m->r.line)) < 1)
-			return (0);
-		while (m->r.line[i] != '\0' && (m->r.line[i] < 48 || m->r.line[i] > 57))
+			return ;
+		while (m->r.line[i] != '\0' && (m->r.line[i] < 48 || m->r.line[i] > 57) && m->r.line[i] != '-')
 			i++;
 		allocate_coordinates(m, s, j, i);
 		free(m->r.line);
@@ -106,39 +158,38 @@ int		get_object_coordinates(t_master *m)
 	tmp = ft_lstnew(s, sizeof(t_shape));
 	ft_lstadd(&m->list, tmp);
 	free(s);
-	return (0);
 }
 
 void	initialize_coordinates(t_shape *s)
 {
-	s->s = 0.0;
-	s->x = 0.0;
-	s->y = 0.0;
-	s->z = 0.0;
-	s->r = 0.0;
-	s->rx = 0.0;
-	s->ry = 0.0;
-	s->rz = 0.0;
+	s->shape_id = 0.0;
+	s->shape_origin_x = 0.0;
+	s->shape_origin_y = 0.0;
+	s->shape_origin_z = 0.0;
+	s->radius = 0.0;
+	s->rotate_shape_x = 0.0;
+	s->rotate_shape_y = 0.0;
+	s->rotate_shape_z = 0.0;
 }
 
 void	allocate_coordinates(t_master *m, t_shape *s, int j, int i)
 {
 	if (j == 0)
-		s->s = ft_atof(m->r.line + i);
+		s->shape_id = ft_atof(m->r.line + i);
 	else if (j == 1)
-		s->x = ft_atof(m->r.line + i);
+		s->shape_origin_x = ft_atof(m->r.line + i);
 	else if (j == 2)
-		s->y = ft_atof(m->r.line + i);
+		s->shape_origin_y = ft_atof(m->r.line + i);
 	else if (j == 3)
-		s->z = ft_atof(m->r.line + i);
+		s->shape_origin_z = ft_atof(m->r.line + i);
 	else if (j == 4)
-		s->r = ft_atof(m->r.line + i);
+		s->radius = ft_atof(m->r.line + i);
 	else if (j == 5)
-		s->rx = ft_atof(m->r.line + i);
+		s->rotate_shape_x = ft_atof(m->r.line + i);
 	else if (j == 6)
-		s->ry = ft_atof(m->r.line + i);
+		s->rotate_shape_y = ft_atof(m->r.line + i);
 	else if (j == 7)
-		s->rz = ft_atof(m->r.line + i);
+		s->rotate_shape_z = ft_atof(m->r.line + i);
 	else
 		return ;
 }

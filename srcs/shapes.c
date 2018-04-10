@@ -14,101 +14,77 @@
 
 double	check_for_sphere(t_master *m, t_shape *s)
 {
-	int		i;
-
-	i = 0;
-	rotate_camera(m);
 	normalize_vectors(m, s);
-	m->t.a = (m->t.nx * m->t.nx) + (m->t.ny * m->t.ny) + (m->t.nz * m->t.nz);
-	m->t.b = 2 * ((m->t.nx * m->t.distx) + (m->t.ny * m->t.disty)
-	+ (m->t.nz * m->t.distz));
+	rotate_camera(m);
+	m->t.a = (m->t.normalized_direction_x * m->t.normalized_direction_x)
+	+ (m->t.normalized_direction_y * m->t.normalized_direction_y)
+	+ (m->t.normalized_direction_z * m->t.normalized_direction_z);
+	m->t.b = 2 * ((m->t.normalized_direction_x * m->t.distx)
+	+ (m->t.normalized_direction_y * m->t.disty)
+	+ (m->t.normalized_direction_z * m->t.distz));
 	m->t.c = ((m->t.distx * m->t.distx) + (m->t.disty * m->t.disty)
 	+ (m->t.distz * m->t.distz))
-	- (s->r * s->r);
-	m->t.discr = get_t_value(m);
-	if (m->t.discr < 0)
+	- (s->radius * s->radius);
+	m->t.t_value = get_t_value(m);
+	if (m->t.t_value < 0.0)
 		return (-0.000001);
 	else
-	{
-		if ((i = light_check(m, s)) == 1)
-			return (m->t.discr);
-		else
-			return (-0.000001);
-	}
+		return (m->t.t_value);
 }
 
 double	check_for_cylinder(t_master *m, t_shape *s)
 {
-	int		i;
-
-	i = 0;
-	rotate_camera(m);
 	normalize_vectors(m, s);
+	rotate_camera(m);
 	rotate(m, s);
 	inner_product(m);
-	m->t.a = m->t.a;
 	m->t.b = 2 * m->t.b;
-	m->t.c = m->t.c - (s->r * s->r);
-	m->t.discr = get_t_value(m);
-	if (m->t.discr < 0)
+	m->t.c = m->t.c - (s->radius * s->radius);
+	m->t.t_value = get_t_value(m);
+	if (m->t.t_value < 0.0)
 		return (-0.000001);
 	else
-	{
-		if ((i = light_check(m, s)) == 1)
-			return (m->t.discr);
-		else
-			return (-0.000001);
-	}
+		return (m->t.t_value);
 }
 
 double	check_for_cone(t_master *m, t_shape *s)
 {
-	int		i;
-
-	i = 0;
-	rotate_camera(m);
 	normalize_vectors(m, s);
+	rotate_camera(m);
 	rotate(m, s);
 	inner_product(m);
-	m->t.a = (cos(s->r) * cos(s->r)) * m->t.a - (sin(s->r) * sin(s->r)) * (m->t.v * m->t.v);
-	m->t.b = 2 * (cos(s->r) * cos(s->r)) * m->t.b - 2 * (sin(s->r) * sin(s->r)) * (m->t.v * m->t.p);
-	m->t.c = (cos(s->r) * cos(s->r)) * m->t.c - (sin(s->r) * sin(s->r)) * (m->t.p * m->t.p);
-	m->t.discr = get_t_value(m);
-	if (m->t.discr < 0)
+	m->t.a = (cos(s->radius) * cos(s->radius)) * m->t.a
+	- (sin(s->radius) * sin(s->radius)) * (m->t.dot_product * m->t.dot_product);
+	m->t.b = 2 * (cos(s->radius) * cos(s->radius)) * m->t.b -
+	2 * (sin(s->radius) * sin(s->radius)) * (m->t.dot_product * m->t.p);
+	m->t.c = (cos(s->radius) * cos(s->radius))
+	* m->t.c - (sin(s->radius) * sin(s->radius)) * (m->t.p * m->t.p);
+	m->t.t_value = get_t_value(m);
+	if (m->t.t_value < 0.0)
 		return (-0.000001);
 	else
-	{
-		if ((i = light_check(m, s)) == 1)
-			return (m->t.discr);
-		else
-			return (-0.000001);
-	}
+		return (m->t.t_value);
 }
 
 double	check_for_plane(t_master *m, t_shape *s)
 {
-	int		i;
-
-	i = 0;
-	rotate_camera(m);
 	normalize_vectors(m, s);
-	m->t.distx = s->x - m->c.x;
-	m->t.disty = s->y - m->c.y;
-	m->t.distz = s->z - m->c.z;
-	m->t.vax = 0;
-	m->t.vay = 0;
-	m->t.vaz = 1;
+	rotate_camera(m);
+	m->t.distx = s->shape_origin_x - m->c.camera_origin_x;
+	m->t.disty = s->shape_origin_y - m->c.camera_origin_y;
+	m->t.distz = s->shape_origin_z - m->c.camera_origin_z;
+	m->t.vax = 0.0;
+	m->t.vay = 0.0;
+	m->t.vaz = 1.0;
 	rotate(m, s);
-	m->t.a = (m->t.distx * m->t.vax) + (m->t.disty * m->t.vay) + (m->t.distz * m->t.vaz);
-	m->t.b = (m->t.nx * m->t.vax) + (m->t.ny * m->t.vay) + (m->t.nz * m->t.vaz);
-	m->t.discr = m->t.a / m->t.b;
-	if (m->t.discr >= 0)
-	{
-		if ((i = light_check(m, s)) == 1)
-			return (m->t.discr);
-		else
-			return (-0.000001);
-	}
+	m->t.a = (m->t.distx * m->t.vax) + (m->t.disty * m->t.vay)
+	+ (m->t.distz * m->t.vaz);
+	m->t.b = (m->t.normalized_direction_x * m->t.vax)
+	+ (m->t.normalized_direction_y * m->t.vay)
+	+ (m->t.normalized_direction_z * m->t.vaz);
+	m->t.t_value = m->t.a / m->t.b;
+	if (m->t.t_value >= 0.0)
+		return (m->t.t_value);
 	else
 		return (-0.000001);
 }
