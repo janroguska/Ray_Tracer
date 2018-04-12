@@ -12,7 +12,7 @@
 
 #include "ray_tracer.h"
 
-void	compute_ray_normal(t_master *m, t_shape *s)
+void	compute_ray_normal(t_master *m, t_shape *s, t_light *l)
 {
 	double	len;
 
@@ -22,23 +22,55 @@ void	compute_ray_normal(t_master *m, t_shape *s)
 	m->l.light_normal_x = m->l.surface_x - s->shape_origin_x;
 	m->l.light_normal_y = m->l.surface_y - s->shape_origin_y;
 	m->l.light_normal_z = m->l.surface_z - s->shape_origin_z;
+	if (s->shape_id != 0.0)
+		get_normal(m, s);
 	len = sqrt((m->l.light_normal_x * m->l.light_normal_x)
 	+ (m->l.light_normal_y * m->l.light_normal_y)
 	+ (m->l.light_normal_z * m->l.light_normal_z));
 	m->l.light_normal_x /= len;
 	m->l.light_normal_y /= len;
 	m->l.light_normal_z /= len;
-	get_angle(m, len);
+	get_angle(m, l);
 }
 
-void	get_angle(t_master *m, double len)
+void	get_normal(t_master *m, t_shape *s)
 {
-	double	dot;
+	double	dot_product;
+	double	normal_origin_x;
+	double	normal_origin_y;
+	double	normal_origin_z;
 
-	dot = (m->t.normalized_direction_x * m->l.light_normal_x)
-	+ (m->t.normalized_direction_y * m->l.light_normal_y)
-	+ (m->t.normalized_direction_z * m->l.light_normal_z);
-	m->l.angle = cos(dot / (m->t.t_value * len));
+	{
+		// len = sqrt((m->l.light_normal_x * m->l.light_normal_x)
+		// + (m->l.light_normal_y * m->l.light_normal_y)
+		// + (m->l.light_normal_z * m->l.light_normal_z));
+		// normal_origin_x = s->shape_origin_x + m->t.vax * len;
+		// normal_origin_y = s->shape_origin_y + m->t.vay * len;
+		// normal_origin_z = s->shape_origin_z + m->t.vaz * len;
+		// m->l.light_normal_x = m->l.surface_x - normal_origin_x;
+		// m->l.light_normal_y = m->l.surface_y - normal_origin_y;
+		// m->l.light_normal_z = m->l.surface_z - normal_origin_z;
+		dot_product = (m->l.light_normal_x * m->t.vax) + (m->l.light_normal_y * m->t.vay)
+		+ (m->l.light_normal_z * m->t.vaz);
+		normal_origin_x = s->shape_origin_x + dot_product * m->t.vax;
+		normal_origin_y = s->shape_origin_y + dot_product * m->t.vay;
+		normal_origin_z = s->shape_origin_z + dot_product * m->t.vaz;
+		m->l.light_normal_x = m->l.surface_x - normal_origin_x;
+		m->l.light_normal_y = m->l.surface_y - normal_origin_y;
+		m->l.light_normal_z = m->l.surface_z - normal_origin_z;
+	}
+}
+
+void	get_angle(t_master *m, t_light *l)
+{
+	double	len;
+
+	len = sqrt((l->light_origin_x * l->light_origin_x)
+	+ (l->light_origin_y * l->light_origin_y)
+	+ (l->light_origin_z * l->light_origin_z));
+	m->l.angle = ((l->light_origin_x / len) * m->l.light_normal_x)
+	+ ((l->light_origin_y / len) * m->l.light_normal_y)
+	+ ((l->light_origin_z / len) * m->l.light_normal_z);
 }
 
 double	light_check(t_master *m, t_shape *s, t_list *list)
@@ -49,7 +81,7 @@ double	light_check(t_master *m, t_shape *s, t_list *list)
 
 	tmp = m->light;
 	l = (t_light*)tmp->content;
-	compute_ray_normal(m, s);
+	compute_ray_normal(m, s, l);
 	m->c.camera_origin_x = l->light_origin_x;
 	m->c.camera_origin_y = l->light_origin_y;
 	m->c.camera_origin_z = l->light_origin_z;

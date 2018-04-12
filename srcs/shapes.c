@@ -70,21 +70,23 @@ double	check_for_plane(t_master *m, t_shape *s)
 {
 	normalize_vectors(m, s);
 	rotate_camera(m);
-	m->t.distx = s->shape_origin_x - m->c.camera_origin_x;
-	m->t.disty = s->shape_origin_y - m->c.camera_origin_y;
-	m->t.distz = s->shape_origin_z - m->c.camera_origin_z;
+	// m->t.distx = s->shape_origin_x - m->c.camera_origin_x;
+	// m->t.disty = s->shape_origin_y - m->c.camera_origin_y;
+	// m->t.distz = s->shape_origin_z - m->c.camera_origin_z;
 	m->t.vax = 0.0;
 	m->t.vay = 0.0;
 	m->t.vaz = 1.0;
 	rotate(m, s);
-	m->t.a = (m->t.distx * m->t.vax) + (m->t.disty * m->t.vay)
-	+ (m->t.distz * m->t.vaz);
 	m->t.b = (m->t.normalized_direction_x * m->t.vax)
 	+ (m->t.normalized_direction_y * m->t.vay)
 	+ (m->t.normalized_direction_z * m->t.vaz);
-	m->t.t_value = m->t.a / m->t.b;
-	if (m->t.t_value >= 0.0)
-		return (m->t.t_value);
-	else
+	if (POS(m->t.b) > 0.0)
+	{
+		m->t.a = (m->t.distx * m->t.vax) + (m->t.disty * m->t.vay)
+		+ (m->t.distz * m->t.vaz);
+		m->t.t_value = -m->t.a / m->t.b;
+		if (m->t.t_value >= 0.0)
+			return (m->t.t_value);
+	}
 		return (-0.000001);
 }

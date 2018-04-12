@@ -73,13 +73,6 @@ void	check_shape(t_master *m, t_list *list)
 	m->c.direction_x = m->d.x;
 	m->c.direction_y = m->d.y;
 	m->c.direction_z = m->d.z;
-	// rotate_camera(m);
-	// m->t.ray_length = sqrt((m->c.direction_x * m->c.direction_x)
-	// + (m->c.direction_y * m->c.direction_y)
-	// + (m->c.direction_z * m->c.direction_z));
-	// m->t.normalized_direction_x = m->c.direction_x / m->t.ray_length;
-	// m->t.normalized_direction_y = m->c.direction_y / m->t.ray_length;
-	// m->t.normalized_direction_z = m->c.direction_z / m->t.ray_length;
 	while (tmp != NULL && tmp->content != NULL)
 	{
 		s = (t_shape*)tmp->content;
@@ -141,7 +134,7 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 	// {
 		if ((i = light_check(&a, s, list)) == 0.0)
 			m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x000000;
-		else if (s->shape_id == 0.0)
+		if (s->shape_id == 0.0)
 		{
 			while (j < m->e.resolution)
 			{
@@ -150,7 +143,7 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 				while (k < m->e.resolution)
 				{
 					// m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0xff0000;
-					m->e.addr[ft_round(x + (y * WIDTH))] = 0xff0000;
+					m->e.addr[ft_round(x + (y * WIDTH))] = (ft_round((255 * a.l.angle))) * 256 * 256;
 					x++;
 					k++;
 				}
@@ -167,7 +160,7 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 				while (k < m->e.resolution)
 				{
 					// m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x00ff00;
-					m->e.addr[ft_round(x + (y * WIDTH))] = 0x00ff00;
+					m->e.addr[ft_round(x + (y * WIDTH))] = (ft_round((255 * a.l.angle))) * 256;
 					x++;
 					k++;
 				}
@@ -184,7 +177,7 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 				while (k < m->e.resolution)
 				{
 					// m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x0000ff;
-					m->e.addr[ft_round(x + (y * WIDTH))] = 0x0000ff;
+					m->e.addr[ft_round(x + (y * WIDTH))] = (ft_round((255 * a.l.angle)));
 					x++;
 					k++;
 				}
@@ -201,7 +194,7 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 				while (k < m->e.resolution)
 				{
 					// m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x778899;
-					m->e.addr[ft_round(x + (y * WIDTH))] = 0x778899;
+					m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(255 * a.l.angle);
 					x++;
 					k++;
 				}

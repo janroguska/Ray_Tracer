@@ -24,6 +24,8 @@ double	get_t_value(t_master *m)
 		return (-0.000001);
 	else if (discr == 0)
 	{
+		if (m->t.a == 0.0)
+			return (-0.000001);
 		t0 = -m->t.b / (2 * m->t.a);	
 		if (t0 < 0.0)
 			return (-0.000001);
@@ -33,6 +35,8 @@ double	get_t_value(t_master *m)
 	else
 	{
 		sqrtdiscr = sqrt(discr);
+		if (m->t.a == 0.0)
+			return (-0.000001);
 		t0 = (-m->t.b + sqrtdiscr) / (2 * m->t.a);
 		t1 = (-m->t.b - sqrtdiscr) / (2 * m->t.a);
 		if ((t0 < t1 && t0 >= 0) || t1 < 0)
@@ -49,9 +53,18 @@ void	normalize_vectors(t_master *m, t_shape *s)
 	m->t.ray_length = sqrt((m->c.direction_x * m->c.direction_x)
 	+ (m->c.direction_y * m->c.direction_y)
 	+ (m->c.direction_z * m->c.direction_z));
-	m->t.normalized_direction_x = m->c.direction_x / m->t.ray_length;
-	m->t.normalized_direction_y = m->c.direction_y / m->t.ray_length;
-	m->t.normalized_direction_z = m->c.direction_z / m->t.ray_length;
+	if (m->t.ray_length != 0.0)
+	{
+		m->t.normalized_direction_x = m->c.direction_x / m->t.ray_length;
+		m->t.normalized_direction_y = m->c.direction_y / m->t.ray_length;
+		m->t.normalized_direction_z = m->c.direction_z / m->t.ray_length;
+	}
+	else
+	{
+		m->t.normalized_direction_x = 0.0;
+		m->t.normalized_direction_y = 0.0;
+		m->t.normalized_direction_z = 0.0;
+	}
 	m->t.distx = m->c.camera_origin_x - s->shape_origin_x;
 	m->t.disty = m->c.camera_origin_y - s->shape_origin_y;
 	m->t.distz = m->c.camera_origin_z - s->shape_origin_z;
