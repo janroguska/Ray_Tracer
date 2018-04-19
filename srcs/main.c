@@ -123,17 +123,15 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 	int			x;
 	int			y;
 	t_master	a;
-	t_list		*tmp;
 
 	j = 0;
 	x = m->d.x;
 	y = m->d.y;
-	tmp = list;
 	ft_memcpy(&a, m, sizeof(t_master));
 	// if ((i = light_check(&a, s, list)) == 1.0)
 	// {
 		if ((i = light_check(&a, s, list)) == 0.0)
-			m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x000000;
+			a.l.angle = a.l.colour;
 		if (s->shape_id == 0.0)
 		{
 			while (j < m->e.resolution)
@@ -142,8 +140,7 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 				x = m->d.x;
 				while (k < m->e.resolution)
 				{
-					// m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0xff0000;
-					m->e.addr[ft_round(x + (y * WIDTH))] = (ft_round((255 * a.l.angle))) * 256 * 256;
+					m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle) * 256 * 256;
 					x++;
 					k++;
 				}
@@ -159,8 +156,7 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 				x = m->d.x;
 				while (k < m->e.resolution)
 				{
-					// m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x00ff00;
-					m->e.addr[ft_round(x + (y * WIDTH))] = (ft_round((255 * a.l.angle))) * 256;
+					m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle) * 256;
 					x++;
 					k++;
 				}
@@ -176,8 +172,8 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 				x = m->d.x;
 				while (k < m->e.resolution)
 				{
-					// m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x0000ff;
-					m->e.addr[ft_round(x + (y * WIDTH))] = (ft_round((255 * a.l.angle)));
+					m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle);
+					// printf("%d\t%d\t%f\n", x, y, a.l.angle / 255);
 					x++;
 					k++;
 				}
@@ -193,8 +189,7 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 				x = m->d.x;
 				while (k < m->e.resolution)
 				{
-					// m->e.addr[ft_round(m->d.x + (m->d.y * WIDTH))] = 0x778899;
-					m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(255 * a.l.angle);
+					m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle) * 256 * 256;
 					x++;
 					k++;
 				}

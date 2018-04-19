@@ -85,8 +85,8 @@ double	check_for_plane(t_master *m, t_shape *s)
 		m->t.a = (m->t.distx * m->t.vax) + (m->t.disty * m->t.vay)
 		+ (m->t.distz * m->t.vaz);
 		m->t.t_value = -m->t.a / m->t.b;
-		if (m->t.t_value >= 0.0)
-			return (m->t.t_value);
+		if (m->t.t_value < 0.0)
+			return (-0.000001);
 	}
-		return (-0.000001);
+		return (m->t.t_value);
 }

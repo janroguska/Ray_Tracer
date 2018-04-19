@@ -116,6 +116,8 @@ typedef	struct	s_light
 	double		light_normal_z;
 	double		angle;
 	double		intensity;
+	double		ambience;
+	double		colour;
 }				t_light;
 
 typedef	struct	s_compute
@@ -181,7 +183,7 @@ void			check_shape(t_master *m, t_list *list);
 void			normalize_vectors(t_master *m, t_shape *s);
 double			get_t_value(t_master *m);
 void			rotate_camera(t_master *m);
-void			compute_ray_normal(t_master *m, t_shape *s, t_light *l);
+void			compute_ray_normal(t_master *m, t_shape *s);
 void			get_angle(t_master *m, t_light *l);
 double			light_check(t_master *m, t_shape *s, t_list *list);
 double			shoot_ray(t_master *m, t_shape *s);
@@ -189,5 +191,6 @@ double			check_obstacle(t_master *m, t_list *list);
 int				move(int keycode, t_master *m);
 void			ft_clear(t_master *m);
 void			get_normal(t_master *m, t_shape *s);
+int				check_double_equality(double a, double b);
 
 #endif

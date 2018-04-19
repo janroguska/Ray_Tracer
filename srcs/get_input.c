@@ -63,7 +63,7 @@ void	get_light_coordinates(t_master *m)
 	j = -1;
 	l = malloc(sizeof(t_light));
 	initialize_light(l);
-	while (++j <= 3)
+	while (++j <= 4)
 	{
 		i = 0;
 		if ((m->r.ret = get_next_line(m->r.fd, &m->r.line)) < 1)
@@ -103,6 +103,8 @@ void	allocate_light(t_master *m, t_light *l, int j, int i)
 		l->light_origin_z = ft_atof(m->r.line + i);
 	else if (j == 3)
 		l->intensity = ft_atof(m->r.line + i);
+	else if (j == 4)
+		l->ambience = ft_atof(m->r.line + i);
 }
 
 void	get_camera_coordinates(t_master *m)
