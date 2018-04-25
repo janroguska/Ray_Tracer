@@ -6,13 +6,13 @@
 #    By: jroguszk <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/03/05 17:37:34 by jroguszk          #+#    #+#              #
-#    Updated: 2018/03/05 17:37:37 by jroguszk         ###   ########.fr        #
+#    Updated: 2018/04/25 14:26:12 by jroguszk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = RTv1
 
-SRC = main.c get_input.c shapes.c
+SRC = main.c get_input.c shapes.c light.c shape_arithmetic.c
 
 OBJ = $(SRC:.c=.o)
 

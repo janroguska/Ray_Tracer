@@ -27,7 +27,7 @@
 
 # define WIDTH 800
 # define HEIGHT 600
-# define POS(i) (i < 0 ? -i : i)
+# define POS(i) (i < 0 ? i * -1 : i)
 # define ESC 53
 # define MOTION_NOTIFY 6
 # define MOTION_MASK (1L<<6)
@@ -180,7 +180,7 @@ void			rotate(t_master *m, t_shape *s);
 void			inner_product(t_master *m);
 double			check_for_plane(t_master *m, t_shape *s);
 void			check_shape(t_master *m, t_list *list);
-void			normalize_vectors(t_master *m, t_shape *s);
+void			normalize_vectors(t_master *m);
 double			get_t_value(t_master *m);
 void			rotate_camera(t_master *m);
 void			compute_ray_normal(t_master *m, t_shape *s);
@@ -191,6 +191,5 @@ double			check_obstacle(t_master *m, t_list *list);
 int				move(int keycode, t_master *m);
 void			ft_clear(t_master *m);
 void			get_normal(t_master *m, t_shape *s);
-int				check_double_equality(double a, double b);
 
 #endif

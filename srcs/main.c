@@ -73,12 +73,17 @@ void	check_shape(t_master *m, t_list *list)
 	m->c.direction_x = m->d.x;
 	m->c.direction_y = m->d.y;
 	m->c.direction_z = m->d.z;
+	normalize_vectors(m);
+	rotate_camera(m);
 	while (tmp != NULL && tmp->content != NULL)
 	{
 		s = (t_shape*)tmp->content;
-		// m->c.direction_x = m->d.x;
-		// m->c.direction_y = m->d.y;
-		// m->c.direction_z = m->d.z;
+		m->t.distx = m->c.camera_origin_x - s->shape_origin_x;
+		m->t.disty = m->c.camera_origin_y - s->shape_origin_y;
+		m->t.distz = m->c.camera_origin_z - s->shape_origin_z;
+		m->t.vax = 0.0;
+		m->t.vay = 1.0;
+		m->t.vaz = 0.0;
 		i = shoot_ray(m, s);
 		if (k == 0)
 			j = i;
@@ -128,76 +133,72 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 	x = m->d.x;
 	y = m->d.y;
 	ft_memcpy(&a, m, sizeof(t_master));
-	// if ((i = light_check(&a, s, list)) == 1.0)
-	// {
-		if ((i = light_check(&a, s, list)) == 0.0)
-			a.l.angle = a.l.colour;
-		if (s->shape_id == 0.0)
+	if ((i = light_check(&a, s, list)) == 0.0)
+		a.l.angle = a.l.colour;
+	if (s->shape_id == 0.0)
+	{
+		while (j < m->e.resolution)
 		{
-			while (j < m->e.resolution)
+			k = 0;
+			x = m->d.x;
+			while (k < m->e.resolution)
 			{
-				k = 0;
-				x = m->d.x;
-				while (k < m->e.resolution)
-				{
-					m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle) * 256 * 256;
-					x++;
-					k++;
-				}
-					y++;
-					j++;
+				m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle) * 256 * 256;
+				x++;
+				k++;
 			}
+			y++;
+			j++;
 		}
-		else if (s->shape_id == 1.0)
+	}
+	else if (s->shape_id == 1.0)
+	{
+		while (j < m->e.resolution)
 		{
-			while (j < m->e.resolution)
+			k = 0;
+			x = m->d.x;
+			while (k < m->e.resolution)
 			{
-				k = 0;
-				x = m->d.x;
-				while (k < m->e.resolution)
-				{
-					m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle) * 256;
-					x++;
-					k++;
-				}
-					y++;
-					j++;
+				m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle) * 256;
+				x++;
+				k++;
 			}
+			y++;
+			j++;
 		}
-		else if (s->shape_id == 2.0)
+	}
+	else if (s->shape_id == 2.0)
+	{
+		while (j < m->e.resolution)
 		{
-			while (j < m->e.resolution)
+			k = 0;
+			x = m->d.x;
+			while (k < m->e.resolution)
 			{
-				k = 0;
-				x = m->d.x;
-				while (k < m->e.resolution)
-				{
-					m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle);
-					// printf("%d\t%d\t%f\n", x, y, a.l.angle / 255);
-					x++;
-					k++;
-				}
-					y++;
-					j++;
+				m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle);
+				x++;
+				k++;
 			}
+			y++;
+			j++;
 		}
-		else if (s->shape_id == 3.0)
+	}
+	else if (s->shape_id == 3.0)
+	{
+		while (j < m->e.resolution)
 		{
-			while (j < m->e.resolution)
+			k = 0;
+			x = m->d.x;
+			while (k < m->e.resolution)
 			{
-				k = 0;
-				x = m->d.x;
-				while (k < m->e.resolution)
-				{
-					m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle) * 256 * 256;
-					x++;
-					k++;
-				}
-					y++;
-					j++;
+				m->e.addr[ft_round(x + (y * WIDTH))] = ft_round(a.l.angle) * 256 * 256;
+				x++;
+				k++;
 			}
+			y++;
+			j++;
 		}
-	// }
+	}
 }
 
 void	ft_clear(t_master *m)
@@ -217,13 +218,13 @@ void	ft_clear(t_master *m)
 int		move(int keycode, t_master *m)
 {
 	if (keycode == ZUP)
-		m->c.rotate_camera_x += 10;
+		m->c.rotate_camera_x += 1;
 	else if (keycode == ZDOWN)
-		m->c.rotate_camera_x -= 10;
+		m->c.rotate_camera_x -= 1;
 	else if (keycode == ZOOMB)
-		m->c.rotate_camera_y += 10;
+		m->c.rotate_camera_y += 1;
 	else if (keycode == ZOOMA)
-		m->c.rotate_camera_y -= 10;
+		m->c.rotate_camera_y -= 1;
 	else if (keycode == PLUS)
 		m->e.resolution *= 2;
 	else if (keycode == MINUS)

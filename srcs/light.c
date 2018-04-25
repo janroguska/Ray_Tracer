@@ -6,7 +6,7 @@
 /*   By: jroguszk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 11:07:54 by jroguszk          #+#    #+#             */
-/*   Updated: 2018/03/27 11:07:56 by jroguszk         ###   ########.fr       */
+/*   Updated: 2018/04/24 09:38:46 by jroguszk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,29 @@ void	compute_ray_normal(t_master *m, t_shape *s)
 	m->l.light_normal_x = m->l.surface_x - s->shape_origin_x;
 	m->l.light_normal_y = m->l.surface_y - s->shape_origin_y;
 	m->l.light_normal_z = m->l.surface_z - s->shape_origin_z;
-	if (s->shape_id != 0.0)
+	if (s->shape_id == 3.0)
+	{
+		m->l.light_normal_x = m->t.vax;
+		m->l.light_normal_y = m->t.vay;
+		m->l.light_normal_z = m->t.vaz;
+	}
+	else if (s->shape_id != 0.0)
 		get_normal(m, s);
 	len = sqrt((m->l.light_normal_x * m->l.light_normal_x)
 	+ (m->l.light_normal_y * m->l.light_normal_y)
 	+ (m->l.light_normal_z * m->l.light_normal_z));
-	m->l.light_normal_x /= len;
-	m->l.light_normal_y /= len;
-	m->l.light_normal_z /= len;
+	if (len == 0.0)
+	{
+		m->l.light_normal_x = 0.0;
+		m->l.light_normal_y = 0.0;
+		m->l.light_normal_z = 0.0;
+	}
+	else
+	{
+		m->l.light_normal_x /= len;
+		m->l.light_normal_y /= len;
+		m->l.light_normal_z /= len;
+	}
 }
 
 void	get_normal(t_master *m, t_shape *s)
@@ -54,17 +69,23 @@ void	get_normal(t_master *m, t_shape *s)
 void	get_angle(t_master *m, t_light *l)
 {
 	double	len;
+	double	light_to_shape_x;
+	double	light_to_shape_y;
+	double	light_to_shape_z;
 
-	len = sqrt((l->light_origin_x * l->light_origin_x)
-	+ (l->light_origin_y * l->light_origin_y)
-	+ (l->light_origin_z * l->light_origin_z));
+	light_to_shape_x = l->light_origin_x - m->l.surface_x;
+	light_to_shape_y = l->light_origin_y - m->l.surface_y;
+	light_to_shape_z = l->light_origin_z - m->l.surface_z;
+	len = sqrt((light_to_shape_x * light_to_shape_x)
+	+ (light_to_shape_y * light_to_shape_y)
+	+ (light_to_shape_z * light_to_shape_z));
 	if (l->ambience > 1.0)
 		l->ambience = 1.0;
 	if (l->intensity > 1.0)
 		l->intensity = 1.0;
-	m->l.angle = ((l->light_origin_x / len) * m->l.light_normal_x)
-	+ ((l->light_origin_y / len) * m->l.light_normal_y)
-	+ ((l->light_origin_z / len) * m->l.light_normal_z);
+	m->l.angle = fabs(((light_to_shape_x / len) * m->l.light_normal_x)
+	+ ((light_to_shape_y / len) * m->l.light_normal_y)
+	+ ((light_to_shape_z / len) * m->l.light_normal_z));
 	if (m->l.angle >= 0.0)
 		m->l.angle = (m->l.angle * l->intensity) + l->ambience;
 	else
@@ -87,12 +108,23 @@ double	light_check(t_master *m, t_shape *s, t_list *list)
 	l = (t_light*)tmp->content;
 	compute_ray_normal(m, s);
 	get_angle(m, l);
-	m->c.direction_x = l->light_origin_x;
-	m->c.direction_y = l->light_origin_y;
-	m->c.direction_z = l->light_origin_z;
-	m->c.camera_origin_x = m->l.surface_x + 0.000001;
-	m->c.camera_origin_y = m->l.surface_y + 0.000001;
-	m->c.camera_origin_z = m->l.surface_z + 0.000001;
+	if (s->shape_id == 3)
+	{
+		m->c.direction_x = l->light_origin_x + 0.000001;
+		m->c.direction_y = l->light_origin_y + 0.000001;
+		m->c.direction_z = l->light_origin_z + 0.000001;
+		normalize_vectors(m);
+		i = shoot_ray(m, s);
+		if (m->t.ray_length - i >= 0.00001 && i >= 0.0)
+			return (0.0);
+	}
+	m->c.camera_origin_x = l->light_origin_x;
+	m->c.camera_origin_y = l->light_origin_y;
+	m->c.camera_origin_z = l->light_origin_z;
+	m->c.direction_x = m->l.surface_x + 0.000001;
+	m->c.direction_y = m->l.surface_y + 0.000001;
+	m->c.direction_z = m->l.surface_z + 0.000001;
+	normalize_vectors(m);
 	i = check_obstacle(m, list);
 	if (i == 1.0)
 		return (1.0);
@@ -103,7 +135,6 @@ double	light_check(t_master *m, t_shape *s, t_list *list)
 double	check_obstacle(t_master *m, t_list *list)
 {
 	double	i;
-	int		a;
 	t_shape *s;
 	t_list	*tmp;
 
@@ -111,26 +142,16 @@ double	check_obstacle(t_master *m, t_list *list)
 	while (tmp != NULL && tmp->content != NULL)
 	{
 		s = (t_shape*)tmp->content;
+		m->t.distx = m->c.camera_origin_x - s->shape_origin_x;
+		m->t.disty = m->c.camera_origin_y - s->shape_origin_y;
+		m->t.distz = m->c.camera_origin_z - s->shape_origin_z;
+		m->t.vax = 0.0;
+		m->t.vay = 1.0;
+		m->t.vaz = 0.0;
 		i = shoot_ray(m, s);
-		a = check_double_equality(i, m->t.ray_length);
-		if (a == 1 && i >= 0.001)
+		if (m->t.ray_length - i >= 0.00001 && i >= 0.0)
 			return (0.0);
 		tmp = tmp->next;
 	}
-		return (1.0);
-}
-
-int		check_double_equality(double a, double b)
-{
-	double	diff;
-	double	largest;
-
-	diff = POS(a - b);
-	a = POS(a);
-	b = POS(b);
-	largest = (b >= a) ? b : a;
-	if (diff <= largest * 0.001)
-		return (1);
-	else
-		return (0);
+	return (1.0);
 }

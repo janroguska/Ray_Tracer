@@ -48,16 +48,23 @@ double	get_t_value(t_master *m)
 	}
 }
 
-void	normalize_vectors(t_master *m, t_shape *s)
+void	normalize_vectors(t_master *m)
 {
-	m->t.ray_length = sqrt((m->c.direction_x * m->c.direction_x)
-	+ (m->c.direction_y * m->c.direction_y)
-	+ (m->c.direction_z * m->c.direction_z));
+	double	dir_minus_origin_x;
+	double	dir_minus_origin_y;
+	double	dir_minus_origin_z;
+
+	dir_minus_origin_x = m->c.direction_x - m->c.camera_origin_x;
+	dir_minus_origin_y = m->c.direction_y - m->c.camera_origin_y;
+	dir_minus_origin_z = m->c.direction_z - m->c.camera_origin_z;
+	m->t.ray_length = sqrt((dir_minus_origin_x * dir_minus_origin_x)
+	+ (dir_minus_origin_y * dir_minus_origin_y)
+	+ (dir_minus_origin_z * dir_minus_origin_z));
 	if (m->t.ray_length != 0.0)
 	{
-		m->t.normalized_direction_x = m->c.direction_x / m->t.ray_length;
-		m->t.normalized_direction_y = m->c.direction_y / m->t.ray_length;
-		m->t.normalized_direction_z = m->c.direction_z / m->t.ray_length;
+		m->t.normalized_direction_x = dir_minus_origin_x / m->t.ray_length;
+		m->t.normalized_direction_y = dir_minus_origin_y / m->t.ray_length;
+		m->t.normalized_direction_z = dir_minus_origin_z / m->t.ray_length;
 	}
 	else
 	{
@@ -65,12 +72,6 @@ void	normalize_vectors(t_master *m, t_shape *s)
 		m->t.normalized_direction_y = 0.0;
 		m->t.normalized_direction_z = 0.0;
 	}
-	m->t.distx = m->c.camera_origin_x - s->shape_origin_x;
-	m->t.disty = m->c.camera_origin_y - s->shape_origin_y;
-	m->t.distz = m->c.camera_origin_z - s->shape_origin_z;
-	m->t.vax = 0.0;
-	m->t.vay = 1.0;
-	m->t.vaz = 0.0;
 }
 
 void	inner_product(t_master *m)

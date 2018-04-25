@@ -14,8 +14,6 @@
 
 double	check_for_sphere(t_master *m, t_shape *s)
 {
-	normalize_vectors(m, s);
-	rotate_camera(m);
 	m->t.a = (m->t.normalized_direction_x * m->t.normalized_direction_x)
 	+ (m->t.normalized_direction_y * m->t.normalized_direction_y)
 	+ (m->t.normalized_direction_z * m->t.normalized_direction_z);
@@ -34,8 +32,6 @@ double	check_for_sphere(t_master *m, t_shape *s)
 
 double	check_for_cylinder(t_master *m, t_shape *s)
 {
-	normalize_vectors(m, s);
-	rotate_camera(m);
 	rotate(m, s);
 	inner_product(m);
 	m->t.b = 2 * m->t.b;
@@ -49,8 +45,6 @@ double	check_for_cylinder(t_master *m, t_shape *s)
 
 double	check_for_cone(t_master *m, t_shape *s)
 {
-	normalize_vectors(m, s);
-	rotate_camera(m);
 	rotate(m, s);
 	inner_product(m);
 	m->t.a = (cos(s->radius) * cos(s->radius)) * m->t.a
@@ -68,11 +62,6 @@ double	check_for_cone(t_master *m, t_shape *s)
 
 double	check_for_plane(t_master *m, t_shape *s)
 {
-	normalize_vectors(m, s);
-	rotate_camera(m);
-	// m->t.distx = s->shape_origin_x - m->c.camera_origin_x;
-	// m->t.disty = s->shape_origin_y - m->c.camera_origin_y;
-	// m->t.distz = s->shape_origin_z - m->c.camera_origin_z;
 	m->t.vax = 0.0;
 	m->t.vay = 0.0;
 	m->t.vaz = 1.0;
