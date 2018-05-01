@@ -77,5 +77,5 @@ double	check_for_plane(t_master *m, t_shape *s)
 		if (m->t.t_value < 0.0)
 			return (-0.000001);
 	}
-		return (m->t.t_value);
+	return (m->t.t_value);
 }

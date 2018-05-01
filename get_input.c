@@ -65,6 +65,11 @@ void	initialize_light(t_light *l)
 	l->light_normal_z = 0.0;
 	l->angle = 0.0;
 	l->intensity = 0.0;
+	l->ambience = 0.0;
+	l->colour = 0.0;
+	l->light_to_shape_x = 0.0;
+	l->light_to_shape_y = 0.0;
+	l->light_to_shape_z = 0.0;
 }
 
 void	initialize_coordinates(t_shape *s)

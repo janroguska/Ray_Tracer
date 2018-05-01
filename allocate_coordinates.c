@@ -124,7 +124,19 @@ void	allocate_light(t_master *m, t_light *l, int j, int i)
 	else if (j == 2)
 		l->light_origin_z = ft_atof(m->r.line + i);
 	else if (j == 3)
+	{
 		l->intensity = ft_atof(m->r.line + i);
+		if (l->intensity > 1.0)
+			l->intensity = 1.0;
+		if (l->intensity < 0.0)
+			l->intensity = 0.0;
+	}
 	else if (j == 4)
+	{
 		l->ambience = ft_atof(m->r.line + i);
+		if (l->ambience > 1.0)
+			l->ambience = 1.0;
+		if (l->ambience < 0.0)
+			l->ambience = 0.0;
+	}
 }

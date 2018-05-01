@@ -23,15 +23,7 @@ double	get_t_value(t_master *m)
 	if (discr < 0.0)
 		return (-0.000001);
 	else if (discr == 0)
-	{
-		if (m->t.a == 0.0)
-			return (-0.000001);
-		t0 = -m->t.b / (2 * m->t.a);	
-		if (t0 < 0.0)
-			return (-0.000001);
-		else
-			return (t0);
-	}
+		return ((t0 = t_is_zero(m)));
 	else
 	{
 		sqrtdiscr = sqrt(discr);
@@ -46,6 +38,20 @@ double	get_t_value(t_master *m)
 		else
 			return (-0.000001);
 	}
+}
+
+double	t_is_zero(t_master *m)
+{
+	double	t0;
+
+	t0 = 0.0;
+	if (m->t.a == 0.0)
+		return (-0.000001);
+	t0 = -m->t.b / (2 * m->t.a);
+	if (t0 < 0.0)
+		return (-0.000001);
+	else
+		return (t0);
 }
 
 void	normalize_vectors(t_master *m)
@@ -93,58 +99,4 @@ void	inner_product(t_master *m)
 	+ (m->t.vz * m->t.pz);
 	m->t.c = (m->t.px * m->t.px) + (m->t.py * m->t.py)
 	+ (m->t.pz * m->t.pz);
-}
-
-void	rotate(t_master *m, t_shape *s)
-{
-	double	x;
-	double	y;
-	double	z;
-
-	y = (m->t.vay * cos(RAD(s->rotate_shape_x)))
-	- (m->t.vaz * sin(RAD(s->rotate_shape_x)));
-	z = (m->t.vay * sin(RAD(s->rotate_shape_x)))
-	+ (m->t.vaz * cos(RAD(s->rotate_shape_x)));
-	x = m->t.vax;
-	m->t.vay = y;
-	m->t.vaz = z;
-	z = (m->t.vaz * cos(RAD(s->rotate_shape_y)))
-	- (m->t.vax * sin(RAD(s->rotate_shape_y)));
-	x = (m->t.vaz * sin(RAD(s->rotate_shape_y)))
-	+ (m->t.vax * cos(RAD(s->rotate_shape_y)));
-	m->t.vax = x;
-	m->t.vaz = z;
-	x = (m->t.vax * cos(RAD(s->rotate_shape_z)))
-	- (m->t.vay * sin(RAD(s->rotate_shape_z)));
-	y = (m->t.vax * sin(RAD(s->rotate_shape_z)))
-	+ (m->t.vay * cos(RAD(s->rotate_shape_z)));
-	m->t.vax = x;
-	m->t.vay = y;
-}
-
-void	rotate_camera(t_master *m)
-{
-	double	x;
-	double	y;
-	double	z;
-
-	y = (m->t.normalized_direction_y * cos(RAD(m->c.rotate_camera_x)))
-	- (m->t.normalized_direction_z * sin(RAD(m->c.rotate_camera_x)));
-	z = (m->t.normalized_direction_y * sin(RAD(m->c.rotate_camera_x)))
-	+ (m->t.normalized_direction_z * cos(RAD(m->c.rotate_camera_x)));
-	x = m->t.normalized_direction_x;
-	m->t.normalized_direction_y = y;
-	m->t.normalized_direction_z = z;
-	z = (m->t.normalized_direction_z * cos(RAD(m->c.rotate_camera_y)))
-	- (m->t.normalized_direction_x * sin(RAD(m->c.rotate_camera_y)));
-	x = (m->t.normalized_direction_z * sin(RAD(m->c.rotate_camera_y)))
-	+ (m->t.normalized_direction_x * cos(RAD(m->c.rotate_camera_y)));
-	m->t.normalized_direction_x = x;
-	m->t.normalized_direction_z = z;
-	x = (m->t.normalized_direction_x * cos(RAD(m->c.rotate_camera_z)))
-	- (m->t.normalized_direction_y * sin(RAD(m->c.rotate_camera_z)));
-	y = (m->t.normalized_direction_x * sin(RAD(m->c.rotate_camera_z)))
-	+ (m->t.normalized_direction_y * cos(RAD(m->c.rotate_camera_z)));
-	m->t.normalized_direction_x = x;
-	m->t.normalized_direction_y = y;
 }

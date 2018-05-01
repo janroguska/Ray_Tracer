@@ -107,6 +107,9 @@ typedef	struct	s_light
 	double		light_origin_x;
 	double		light_origin_y;
 	double		light_origin_z;
+	double		light_to_shape_x;
+	double		light_to_shape_y;
+	double		light_to_shape_z;
 	double		surface_x;
 	double		surface_y;
 	double		surface_z;
@@ -188,6 +191,10 @@ double			light_check(t_master *m, t_shape *s, t_list *list);
 double			shoot_ray(t_master *m, t_shape *s);
 double			check_obstacle(t_master *m, t_list *list);
 void			ft_clear(t_master *m);
-void			get_normal(t_master *m, t_shape *s);
+double			get_normal(t_master *m, t_shape *s);
+double			t_is_zero(t_master *m);
+void			set_variables(t_master *m, t_shape *s);
+double			plane_shadow(t_master *m, t_shape *s, t_light *l);
+void			normalize_light_ray(t_master *m, t_light *l);
 
 #endif
