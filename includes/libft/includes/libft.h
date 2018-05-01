@@ -35,14 +35,14 @@ typedef	struct		s_struct
 	char			*buf[OPEN_MAX];
 }					t_b;
 
-typedef	struct s_atof
+typedef	struct		s_atof
 {
-	int		i;
-	double	k;
-	double	nbr;
-	double	temp;
-	long double	j;
-}				t_atof;
+	int				i;
+	double			k;
+	double			nbr;
+	double			temp;
+	long double		j;
+}					t_atof;
 
 void				ft_putchar(char c);
 void				ft_putstr(char const *s);
