@@ -19,7 +19,7 @@ int		main(int argc, char **argv)
 	m.list = ft_lstnew(NULL, 0);
 	m.e.resolution = 1.0;
 	if (argc != 2)
-		return (0);
+		ft_error();
 	m.e.mlx = mlx_init();
 	m.e.win = mlx_new_window(m.e.mlx, WIDTH, HEIGHT, "RAYYYYY!!!");
 	m.e.img = mlx_new_image(m.e.mlx, WIDTH, HEIGHT);
@@ -31,6 +31,16 @@ int		main(int argc, char **argv)
 	mlx_put_image_to_window(m.e.mlx, m.e.win, m.e.img, 0, 0);
 	mlx_loop(m.e.mlx);
 	return (0);
+}
+
+int		ft_error(void)
+{
+	ft_putendl("pass a text file in the command line with following format:");
+	ft_putendl("camera\n\tx:\n\ty:\n\tz:\n\trotatex:\n\trotatey:\n\trotatez:");
+	ft_putendl("object\n\tshape:\n\tx:\n\ty:\n\tz:\n\tradius:\n\trotatex:");
+	ft_putendl("\trotatey:\n\trotatez:");
+	ft_putendl("light\n\tx:\n\ty:\n\tz:\n\tintensity:\n\tambience:");
+	exit(0);
 }
 
 int		ft_round(double i)

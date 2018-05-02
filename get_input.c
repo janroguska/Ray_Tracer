@@ -20,13 +20,11 @@ int		read_file(t_master *m, char *argv)
 	m->r.fd = open(argv, O_RDONLY);
 	i = 0;
 	if (m->r.fd == -1)
-		exit(0);
+		ft_error();
 	while ((m->r.ret = get_next_line(m->r.fd, &m->r.line)) > 0)
 	{
 		i = 0;
 		j = -1;
-		if (m->r.ret == -1)
-			return (0);
 		while (m->r.line[i] != '\t' && m->r.line[i] != ':' &&
 			m->r.line[i] != ' ' && m->r.line[i] != '\n' && m->r.line[i] != '\0')
 			i++;
@@ -37,6 +35,8 @@ int		read_file(t_master *m, char *argv)
 		free(m->r.line);
 		check_input(m);
 	}
+	if (m->r.ret == -1)
+		ft_error();
 	return (0);
 }
 

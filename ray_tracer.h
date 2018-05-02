@@ -196,5 +196,6 @@ double			t_is_zero(t_master *m);
 void			set_variables(t_master *m, t_shape *s);
 double			plane_shadow(t_master *m, t_shape *s, t_light *l);
 void			normalize_light_ray(t_master *m, t_light *l);
+int				ft_error(void);
 
 #endif
