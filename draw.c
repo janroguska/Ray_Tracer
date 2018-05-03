@@ -17,17 +17,13 @@ int		draw(t_master *m)
 	t_list	*tmp;
 
 	m->d.z = -WIDTH / 2;
-	m->d.y = 0.0;
+	m->d.y = -1;
 	tmp = m->list;
-	while (m->d.y < HEIGHT)
+	while (++m->d.y < HEIGHT)
 	{
-		m->d.x = 0.0;
-		while (m->d.x < WIDTH)
-		{
+		m->d.x = -1;
+		while (++m->d.x < WIDTH)
 			check_shape(m, tmp);
-			m->d.x += m->e.resolution;
-		}
-		m->d.y += m->e.resolution;
 	}
 	mlx_put_image_to_window(m->e.mlx, m->e.win, m->e.img, 0, 0);
 	return (0);

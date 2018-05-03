@@ -59,7 +59,6 @@ typedef	struct	s_env
 	void		*mlx;
 	void		*win;
 	void		*img;
-	double		resolution;
 }				t_env;
 
 typedef	struct	s_camera

@@ -17,7 +17,6 @@ int		main(int argc, char **argv)
 	t_master	m;
 
 	m.list = ft_lstnew(NULL, 0);
-	m.e.resolution = 1.0;
 	if (argc != 2)
 		ft_error();
 	m.e.mlx = mlx_init();
