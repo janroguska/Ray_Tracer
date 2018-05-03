@@ -17,13 +17,17 @@ int		draw(t_master *m)
 	t_list	*tmp;
 
 	m->d.z = -WIDTH / 2;
-	m->d.y = -1;
+	m->d.y = 0.0;
 	tmp = m->list;
-	while (++m->d.y < HEIGHT)
+	while (m->d.y < HEIGHT)
 	{
-		m->d.x = -1;
-		while (++m->d.x < WIDTH)
+		m->d.x = 0.0;
+		while (m->d.x < WIDTH)
+		{
 			check_shape(m, tmp);
+			m->d.x++;
+		}
+		m->d.y++;
 	}
 	mlx_put_image_to_window(m->e.mlx, m->e.win, m->e.img, 0, 0);
 	return (0);
@@ -40,12 +44,12 @@ void	check_shape(t_master *m, t_list *list)
 	j = 0.0;
 	k = 0;
 	tmp = list;
-	normalize_vectors(m);
-	rotate_camera(m);
 	while (tmp != NULL && tmp->content != NULL)
 	{
 		s = (t_shape*)tmp->content;
 		set_variables(m, s);
+		normalize_vectors(m);
+		rotate_camera(m);
 		i = shoot_ray(m, s);
 		if (k++ == 0)
 			j = i;
@@ -97,14 +101,14 @@ void	colour(t_master *m, t_shape *s, t_list *list)
 		a.l.angle = a.l.colour;
 	if (s->shape_id == 0.0)
 		m->e.addr[ft_round(m->d.x +
-		(m->d.y * WIDTH))] = ft_round(a.l.angle) * 256 * 256;
+	(m->d.y * WIDTH))] = ft_round(a.l.angle) * 256 * 256;
 	else if (s->shape_id == 1.0)
 		m->e.addr[ft_round(m->d.x +
-		(m->d.y * WIDTH))] = ft_round(a.l.angle) * 256;
+	(m->d.y * WIDTH))] = ft_round(a.l.angle) * 256;
 	else if (s->shape_id == 2.0)
 		m->e.addr[ft_round(m->d.x +
-		(m->d.y * WIDTH))] = ft_round(a.l.angle);
+	(m->d.y * WIDTH))] = ft_round(a.l.angle);
 	else if (s->shape_id == 3.0)
 		m->e.addr[ft_round(m->d.x +
-		(m->d.y * WIDTH))] = ft_round(a.l.angle) * 256 * 256;
+	(m->d.y * WIDTH))] = ft_round(a.l.angle) * 256 * 256;
 }
