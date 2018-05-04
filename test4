@@ -1,0 +1,49 @@
+light:
+		x: 0.0
+		y: 0.0
+		z: 600.0
+		intensity: 1.0
+		ambience: 0.2
+camera:
+		x: 0.0
+		y: 0.0
+		z: 300.0
+		rotationx: 0.0
+		rotationy: 0.0
+		rotationz: 0.0
+object:
+		shape: 0.0
+		x: 70.0
+		y: 70.0
+		z: 0.0
+		r: 40.0
+		rotationx: 0.0
+		rotationy: 0.0
+		rotationz: 0.0
+object:
+		shape: 0.0
+		x: 70.0
+		y: 70.0
+		z: 50.0
+		r: 30.0
+		rotationx: 0.0
+		rotationy: 0.0
+		rotationz: 0.0
+object:
+		shape: 0.0
+		x: 70.0
+		y: 70.0
+		z: 100.0
+		r: 20.0
+		rotationx: 0.0
+		rotationy: 0.0
+		rotationz: 0.0
+object:
+		shape: 0.0
+		x: 70.0
+		y: 70.0
+		z: 130.0
+		r: 10.0
+		rotationx: 0.0
+		rotationy: 0.0
+		rotationz: 0.0
