@@ -2,8 +2,8 @@ light:
 		x: -200.0
 		y: -200.0
 		z: 600.0
-		intensity: 1.0
-		ambience: 0.2
+		intensity: 0.2
+		ambience: 0.0
 camera:
 		x: 0.0
 		y: 0.0
